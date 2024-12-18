@@ -1,6 +1,7 @@
 # C2ML
 
 ## Script architecture
+
 MOFs_llm
 ├── datareadingdemo
 │   └── CIF.py
@@ -26,5 +27,5 @@ MOFs_llm
 │   └── file_processor.py
 │   └── workflow_core.py
 │   └── workflow_manager.py
-└── main.py
+│   └── main.py
 
