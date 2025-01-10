@@ -2,6 +2,7 @@
 
 ## Script architecture
 
+```markdwon
 C2ML
 ├── datareading
 │   └── ccdcdata.json
@@ -53,3 +54,5 @@ C2ML
     ├── workflow_manager.py
     ├── prompt
     │   └── totext.py
+```
+
