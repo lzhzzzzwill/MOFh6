@@ -3,7 +3,7 @@
 ## Script architecture
 
 ```markdwon
-C2ML
+MOFh6
 ├── datareading
 │   └── ccdcdata.json
 ├── extrfinetune
