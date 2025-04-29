@@ -57,3 +57,14 @@ MOFh6
 ```
 
 The patent is currently under review.
+
+If you want to use this tool, please cite:
+@misc{lin2025reshapingmofstextmining,
+      title={Reshaping MOFs Text Mining with a Dynamic Multi-Agent Framework of Large Language Agents}, 
+      author={Zuhong Lin and Daoyuan Ren and Kai Ran and Sun Jing and Xiaotiang Huang and Haiyang He and Pengxu Pan and Xiaohang Zhang and Ying Fang and Tianying Wang and Minli Wu and Zhanglin Li and Xiaochuan Zhang and Haipu Li and Jingjing Yao},
+      year={2025},
+      eprint={2504.18880},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2504.18880}, 
+}
