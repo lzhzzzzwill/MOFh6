@@ -1,8 +1,8 @@
 {
-    "openaiapikey": "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",
-    "apikey": "sk-GulXLUQUcxfOAT1pjbOoyTKc9avguLDjYynP47jKmF1Vb7ZA",
-    "baseurl": "https://www.dmxapi.com/v1",
-    "xlsx_path": "/Users/linzuhong/学习文件/3-博/博四/C2ML/datareading/Dataset/metadata.xlsx",
+    "openaiapikey": ".../",
+    "apikey": ".../",
+    "baseurl": ".../",
+    "xlsx_path": ".../metadata.xlsx",
     "shot50": "ft:gpt-4o-mini-2024-07-18:personal:elsparagraphextr:BC208k2s",
     "shot99": "ft:gpt-4o-mini-2024-07-18:personal:elsparagraphextr:AXqDAOfJ",
     "shot198": "ft:gpt-4o-mini-2024-07-18:personal:elsparagraphextr:AYuWC3CG"
