@@ -56,7 +56,7 @@ MOFh6
     │   └── totext.py
 ```
 
-The patent is currently under review.
+The software copyright is currently under review.
 
 If you want to use this tool, please cite:
 ```bibtex
