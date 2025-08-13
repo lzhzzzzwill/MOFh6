@@ -17,7 +17,6 @@ By combining large language models (LLMs) and rule-based agents, MOFh6 delivers 
 │       ├── elsedatatable.py
 │       ├── elsehl.py
 │       ├── jtjprompt.py
-│       ├── sstru.py
 │       └── sstru1.py
 ├── 📁 icon
 ├── main.py
