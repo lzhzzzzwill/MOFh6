@@ -454,6 +454,7 @@ class MOFWorkflowManager(WorkflowBase):
             }
         }
         
+        
         workflow = self.create_workflow()
         try:
             final_state = workflow.invoke(initial_state)
