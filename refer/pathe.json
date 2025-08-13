@@ -1,0 +1,19 @@
+{
+  "dynamic_patterns": {
+      "section": "//*[starts-with(@id, \"section\")]/span/span/form/button",
+      "sec": "//*[starts-with(@id, \"sec\")]/span/span/form/button",
+      "s": "//*[starts-with(@id, \"s\")]/span/span/form/button",
+      "m": "//*[starts-with(@id, \"m\")]/span[1]/a",
+      "aep-section-id": "//*[starts-with(@id, \"aep-section-id\")]/span/span/form/button",
+      "aep-e-component-id": "//*[starts-with(@id, \"aep-e-component-id\")]/span[1]/a",
+      "ecomp": "//*[starts-with(@id, \"ecomp\")]/span[1]/a",
+      "e-component": "//*[starts-with(@id, \"e-component\")]/span[1]/a",
+      "e-component.": "//*[starts-with(@id, \"e-component.\")]/span[1]/a",
+      "ec": "//*[starts-with(@id, \"ec\")]/span/a",
+      "ec-span1": "//*[starts-with(@id, \"ec\")]/span[1]/a",
+      "appseca": "//*[starts-with(@id, \"appseca\")]/span/span/form/button",
+      "appsec": "//*[starts-with(@id, \"appsec\")]/span/span/form/button",
+      "app": "//*[starts-with(@id, \"app\")]/span/span/form/button",
+      "mmc": "//*[starts-with(@id, \"mmc\")]/span[1]/a"
+  }
+}
