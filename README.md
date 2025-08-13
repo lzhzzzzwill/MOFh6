@@ -52,7 +52,10 @@ By combining large language models (LLMs) and rule-based agents, MOFh6 delivers 
     └── workflow_manager.py
 ```
 
-The software copyright is currently under review.
+## folder function
+
+### datareading
+- The core meta data of MOFh6, click on [datareading](https://github.com/lzhzzzzwill/MOFh6/tree/main/datareading) to learn more.
 
 If you want to use this tool, please cite:
 ```bibtex
@@ -65,4 +68,6 @@ If you want to use this tool, please cite:
       primaryClass={cs.AI},
       url={https://arxiv.org/abs/2504.18880}, 
 }
+```
 
+- The software copyright is currently under review.
