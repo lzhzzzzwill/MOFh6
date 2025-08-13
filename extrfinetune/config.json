@@ -1,9 +1,6 @@
 {
-    "openaiapikey": ".../",
-    "apikey": ".../",
-    "baseurl": ".../",
-    "xlsx_path": ".../metadata.xlsx",
-    "shot50": "ft:gpt-4o-mini-2024-07-18:personal:elsparagraphextr:BC208k2s",
-    "shot99": "ft:gpt-4o-mini-2024-07-18:personal:elsparagraphextr:AXqDAOfJ",
-    "shot198": "ft:gpt-4o-mini-2024-07-18:personal:elsparagraphextr:AYuWC3CG"
+  "openaiapikey": "",
+  "baseurl": "https://api.openai.com/v1",
+  "xlsx_path": "./datareading/Dataset/metadata.xlsx",
+  "shot198": "ft:gpt-4o-mini-2024-07-18:personal:elsparagraphextr:AYuWC3CG"
 }
