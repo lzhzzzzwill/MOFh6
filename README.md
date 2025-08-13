@@ -1,5 +1,5 @@
 # <img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/app.PNG" alt="MOFh6 Logo" width="80"> MOFh6
-<img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/toc.png" alt="MOFh6 TOC" width="400">
+<img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/toc.png" alt="MOFh6 TOC" width="600">
 From the challenge of sifting through vast, ambiguous MOF literature to the clarity of structured, actionable data, **MOFh6** emerges as the solution. It is an intelligent, multi-agent system that transforms unstructured scientific text on metal–organic frameworks (MOFs) into analysis-ready synthesis and property data. By combining large language models (LLMs) with rule-based agents, MOFh6 delivers high-accuracy, cost-efficient extraction, enabling scalable, data-driven materials discovery.
 
 MOFh6 operates within an **enterprise-inspired framework**, where each role mirrors a corporate function:
@@ -8,7 +8,7 @@ MOFh6 operates within an **enterprise-inspired framework**, where each role mirr
 - **CMO** – Oversees data management and user interaction, ensuring a smooth and accessible user experience.  
 - **COO** – Comprising human experts, focuses on data annotation and workflow design for high-quality inputs.  
 - **CTO** – Constituted by LLM agents, leads the integration and deployment of core technological capabilities.
-<img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/MOFh6frame.png" alt="MOFh6frame" width="400">
+<img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/MOFh6frame.png" alt="MOFh6frame" width="600">
 
 # Script architecture
 
@@ -63,17 +63,17 @@ MOFh6 operates within an **enterprise-inspired framework**, where each role mirr
 # folder and script function
 ## Core Tasks of MOFh6
 
-1. **Synthesis Extraction** – Retrieve detailed synthesis descriptions for specified MOFs.  
-2. **Pore Structure Analysis** – Obtain pore structure parameters for the target MOFs.  
-3. **Structure Visualization** – Generate visual representations of the specified MOFs.  
+I. **Synthesis Extraction** – Retrieve detailed synthesis descriptions for specified MOFs.  
+II. **Pore Structure Analysis** – Obtain pore structure parameters for the target MOFs.  
+III. **Structure Visualization** – Generate visual representations of the specified MOFs.  
 
-<img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/MOFh6pipline.png" alt="MOFh6 Pipeline" width="400">
+<img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/MOFh6pipline.png" alt="MOFh6 Pipeline" width="600">
 
 ### datareading
 - The core meta data of MOFh6, click on [📁 datareading](https://github.com/lzhzzzzwill/MOFh6/tree/main/datareading) to learn more.
 
 ### extrfinetune
-- CTO – Comprising MOFh6’s core LLM agent, is responsible for extracting the synthesis information of specified MOFs from full-length scientific literature,
+- CTO – Comprising MOFh6’s core LLM agent, is primarily responsible for Task I, which involves extracting synthesis information of specified MOFs from full-length scientific literature,
 click on [📁 extrfinetune](https://github.com/lzhzzzzwill/MOFh6/tree/main/extrfinetune) to learn more.
 
 ### refer
@@ -81,7 +81,7 @@ click on [📁 extrfinetune](https://github.com/lzhzzzzwill/MOFh6/tree/main/extr
 click on [📁 refer](https://github.com/lzhzzzzwill/MOFh6/tree/main/refer) to learn more.
 
 ### request
-- Responsible for delivering pore structure parameters of specified MOFs and enabling in-depth structural exploration within MOFh6.
+- CTO – Comprising MOFh6’s core LLM agent, is primarily responsible for Task II and Task III, delivering pore structure parameters of specified MOFs and enabling in-depth structural exploration within MOFh6.
 
 ### ulanggraph
 - CEO appointed by LangGraph to coordinate and manage the execution of all agents and tools.
