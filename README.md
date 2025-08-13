@@ -57,6 +57,14 @@ By combining large language models (LLMs) and rule-based agents, MOFh6 delivers 
 ### datareading
 - The core meta data of MOFh6, click on [datareading](https://github.com/lzhzzzzwill/MOFh6/tree/main/datareading) to learn more.
 
+### extrfinetune
+- The core LLM agent in MOFh6 is responsible for extracting synthesis information of specified MOFs from full-length scientific literature.
+
+### refer
+- Retrieving scientific literature through compliance-driven data-mining scripts to supply source material for the MOFh6 workflow,
+click on [refer](https://github.com/lzhzzzzwill/MOFh6/tree/main/refer) to learn more.
+
+
 If you want to use this tool, please cite:
 ```bibtex
 @misc{lin2025reshapingmofstextmining,
