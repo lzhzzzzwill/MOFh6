@@ -1,9 +1,14 @@
 # <img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/app.PNG" alt="MOFh6 Logo" width="80"> MOFh6
-<img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/toc.png" alt="MOFh6 TOC" width="800">
-From the challenge of sifting through vast, 
-ambiguous MOF literature to the clarity of structured, actionable data, 
-MOFh6 emerges as the solution. It is an intelligent, multi-agent system that transforms unstructured scientific text on metal–organic frameworks (MOFs) into analysis-ready synthesis and property data. 
-By combining large language models (LLMs) with rule-based agents, MOFh6 delivers high-accuracy, cost-efficient extraction, enabling scalable, data-driven materials discovery.
+<img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/toc.png" alt="MOFh6 TOC" width="400">
+From the challenge of sifting through vast, ambiguous MOF literature to the clarity of structured, actionable data, **MOFh6** emerges as the solution. It is an intelligent, multi-agent system that transforms unstructured scientific text on metal–organic frameworks (MOFs) into analysis-ready synthesis and property data. By combining large language models (LLMs) with rule-based agents, MOFh6 delivers high-accuracy, cost-efficient extraction, enabling scalable, data-driven materials discovery.
+
+MOFh6 operates within an **enterprise-inspired framework**, where each role mirrors a corporate function:
+
+- **CEO** – Responsible for central coordination, leveraging the Langgraph framework to orchestrate all agents and tools.  
+- **CMO** – Oversees data management and user interaction, ensuring a smooth and accessible user experience.  
+- **COO** – Comprising human experts, focuses on data annotation and workflow design for high-quality inputs.  
+- **CTO** – Constituted by LLM agents, leads the integration and deployment of core technological capabilities.
+<img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/MOFh6frame.png" alt="MOFh6frame" width="400">
 
 # Script architecture
 
@@ -62,7 +67,7 @@ By combining large language models (LLMs) with rule-based agents, MOFh6 delivers
 2. **Pore Structure Analysis** – Obtain pore structure parameters for the target MOFs.  
 3. **Structure Visualization** – Generate visual representations of the specified MOFs.  
 
-![MOFh6 Pipeline](https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/MOFh6pipline.png)
+<img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/MOFh6pipline.png" alt="MOFh6 Pipeline" width="400">
 
 ### datareading
 - The core meta data of MOFh6, click on [📁 datareading](https://github.com/lzhzzzzwill/MOFh6/tree/main/datareading) to learn more.
