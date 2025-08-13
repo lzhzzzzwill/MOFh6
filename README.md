@@ -52,7 +52,7 @@ By combining large language models (LLMs) and rule-based agents, MOFh6 delivers 
     └── workflow_manager.py
 ```
 
-## folder function
+## folder and script function
 
 ### datareading
 - The core meta data of MOFh6, click on [datareading](https://github.com/lzhzzzzwill/MOFh6/tree/main/datareading) to learn more.
@@ -64,8 +64,16 @@ By combining large language models (LLMs) and rule-based agents, MOFh6 delivers 
 - Retrieving scientific literature through compliance-driven data-mining scripts to supply source material for the MOFh6 workflow,
 click on [refer](https://github.com/lzhzzzzwill/MOFh6/tree/main/refer) to learn more.
 
+### request
+- Responsible for delivering pore structure parameters of specified MOFs and enabling in-depth structural exploration within MOFh6.
 
-If you want to use this tool, please cite:
+### ulanggraph
+- CEO agent appointed by LangGraph to coordinate and manage the execution of all agents and tools.
+
+### main.py
+To run MOFh6 locally, please review the folder descriptions above to configure the environment correctly. For quick access without local setup, we also provide an online [app](https://huggingface.co/spaces/Willlzh/MOFh6), ready to use, no installation required.
+
+### If you want to use this tool, please cite:
 ```bibtex
 @misc{lin2025reshapingmofstextmining,
       title={Reshaping MOFs text mining with a dynamic multi-agents framework of large language model}, 
