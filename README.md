@@ -60,7 +60,7 @@ MOFh6 operates within an **enterprise-inspired framework**, where each role mirr
     └── workflow_manager.py
 ```
 
-# folder and script function
+# folder&script function
 ## Core Tasks of MOFh6
 
 I. **Synthesis Extraction** – Retrieve detailed synthesis descriptions for specified MOFs.  
@@ -87,7 +87,13 @@ click on [📁 refer](https://github.com/lzhzzzzwill/MOFh6/tree/main/refer) to l
 - CEO appointed by LangGraph to coordinate and manage the execution of all agents and tools.
 
 ### [📜 main.py](https://github.com/lzhzzzzwill/MOFh6/blob/main/main.py)
-CMO – Oversees data management and user interaction. To run MOFh6 locally, users should review the folder descriptions above to configure the environment correctly. 
+CMO – Oversees data management and user interaction. To run MOFh6 locally, users should review the folder&script function above to configure the environment correctly. 
+```python
+# Python environment
+# Recommended: Python 3.10
+# Install dependencies
+pip install -r requirements.txt
+```
 For quick access without local setup, the CMO also provides an online [💻 app](https://huggingface.co/spaces/Willlzh/MOFh6), enabling immediate use without installation.
 
 ### If you want to use this tool, please cite:
