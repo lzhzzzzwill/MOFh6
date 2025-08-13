@@ -5,7 +5,7 @@ ambiguous MOF literature to the clarity of structured, actionable data,
 MOFh6 emerges as the solution. It is an intelligent, multi-agent system that transforms unstructured scientific text on metal–organic frameworks (MOFs) into analysis-ready synthesis and property data. 
 By combining large language models (LLMs) with rule-based agents, MOFh6 delivers high-accuracy, cost-efficient extraction, enabling scalable, data-driven materials discovery.
 
-## Script architecture
+# Script architecture
 
 ```markdwon
 📁 MOFh6
@@ -55,7 +55,14 @@ By combining large language models (LLMs) with rule-based agents, MOFh6 delivers
     └── workflow_manager.py
 ```
 
-## folder and script function
+# folder and script function
+## Core Tasks of MOFh6
+
+1. **Synthesis Extraction** – Retrieve detailed synthesis descriptions for specified MOFs.  
+2. **Pore Structure Analysis** – Obtain pore structure parameters for the target MOFs.  
+3. **Structure Visualization** – Generate visual representations of the specified MOFs.  
+
+![MOFh6 Pipeline](https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/MOFh6pipline.png)
 
 ### datareading
 - The core meta data of MOFh6, click on [📁 datareading](https://github.com/lzhzzzzwill/MOFh6/tree/main/datareading) to learn more.
