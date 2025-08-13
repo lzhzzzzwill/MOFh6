@@ -86,7 +86,7 @@ click on [📁 refer](https://github.com/lzhzzzzwill/MOFh6/tree/main/refer) to l
 ### ulanggraph
 - CEO appointed by LangGraph to coordinate and manage the execution of all agents and tools.
 
-### main.py
+### [📜 main.py](https://github.com/lzhzzzzwill/MOFh6/blob/main/main.py)
 CMO – Oversees data management and user interaction. To run MOFh6 locally, users should review the folder descriptions above to configure the environment correctly. 
 For quick access without local setup, the CMO also provides an online [💻 app](https://huggingface.co/spaces/Willlzh/MOFh6), enabling immediate use without installation.
 
