@@ -55,14 +55,15 @@ By combining large language models (LLMs) and rule-based agents, MOFh6 delivers 
 ## folder and script function
 
 ### datareading
-- The core meta data of MOFh6, click on [datareading](https://github.com/lzhzzzzwill/MOFh6/tree/main/datareading) to learn more.
+- The core meta data of MOFh6, click on [📁 datareading](https://github.com/lzhzzzzwill/MOFh6/tree/main/datareading) to learn more.
 
 ### extrfinetune
-- The core LLM agent in MOFh6 is responsible for extracting synthesis information of specified MOFs from full-length scientific literature.
+- The core LLM agent in MOFh6 is responsible for extracting synthesis information of specified MOFs from full-length scientific literature,
+click on [📁 extrfinetune](https://github.com/lzhzzzzwill/MOFh6/tree/main/extrfinetune) to learn more.
 
 ### refer
 - Retrieving scientific literature through compliance-driven data-mining scripts to supply source material for the MOFh6 workflow,
-click on [refer](https://github.com/lzhzzzzwill/MOFh6/tree/main/refer) to learn more.
+click on [📁 refer](https://github.com/lzhzzzzwill/MOFh6/tree/main/refer) to learn more.
 
 ### request
 - Responsible for delivering pore structure parameters of specified MOFs and enabling in-depth structural exploration within MOFh6.
