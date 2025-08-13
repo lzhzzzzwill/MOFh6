@@ -5,7 +5,7 @@ import json
 @dataclass
 class Config:
     api_key: str
-    base_url: Optional[str]
+#    base_url: Optional[str]
     xlsx_path: str
 
 def load_config(config_path: str) -> Config:
@@ -15,14 +15,14 @@ def load_config(config_path: str) -> Config:
             config_data = json.load(f)
             
             # Validate required fields
-            required_fields = ['apikey', 'xlsx_path']
+            required_fields = ['openaiapikey', 'xlsx_path']
             missing_fields = [field for field in required_fields if field not in config_data]
             if missing_fields:
                 raise KeyError(f"Missing required configuration fields: {', '.join(missing_fields)}")
                 
             return Config(
-                api_key=config_data['apikey'],
-                base_url=config_data.get('baseurl'),
+                api_key=config_data['openaiapikey'],
+#                base_url=config_data.get('baseurl'),
                 xlsx_path=config_data['xlsx_path']
             )
     except FileNotFoundError:
