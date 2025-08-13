@@ -73,7 +73,7 @@ MOFh6 operates within an **enterprise-inspired framework**, where each role mirr
 - The core meta data of MOFh6, click on [📁 datareading](https://github.com/lzhzzzzwill/MOFh6/tree/main/datareading) to learn more.
 
 ### extrfinetune
-- The core LLM agent in MOFh6 is responsible for extracting synthesis information of specified MOFs from full-length scientific literature,
+- CTO – Comprising MOFh6’s core LLM agent, is responsible for extracting the synthesis information of specified MOFs from full-length scientific literature,
 click on [📁 extrfinetune](https://github.com/lzhzzzzwill/MOFh6/tree/main/extrfinetune) to learn more.
 
 ### refer
@@ -84,10 +84,10 @@ click on [📁 refer](https://github.com/lzhzzzzwill/MOFh6/tree/main/refer) to l
 - Responsible for delivering pore structure parameters of specified MOFs and enabling in-depth structural exploration within MOFh6.
 
 ### ulanggraph
-- CEO agent appointed by LangGraph to coordinate and manage the execution of all agents and tools.
+- CEO appointed by LangGraph to coordinate and manage the execution of all agents and tools.
 
 ### main.py
-To run MOFh6 locally, please review the folder descriptions above to configure the environment correctly. For quick access without local setup, we also provide an online [app](https://huggingface.co/spaces/Willlzh/MOFh6), ready to use, no installation required.
+CMO – Oversees data management and user interaction. To run MOFh6 locally, users should review the folder descriptions above to configure the environment correctly. For quick access without local setup, the CMO also provides an online app, enabling immediate use without installation.
 
 ### If you want to use this tool, please cite:
 ```bibtex
