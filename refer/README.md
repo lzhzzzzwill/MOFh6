@@ -41,12 +41,6 @@ line 200: chrome_driver_path = r'.../chromedriver.exe'
 
 ## 1. Construction of meta dataset
 
-- Contents of this folder are for building the meta dataset
-### 1.1. Obtaining the original CCDC code and corresponding publication information of MOFs
-- Script: Publisher_statistics.py
-
-### 1.2. Data mining from obtained publications
-
 - We provide crawler scripts for data mining from the following publications
 
   - [American Chemical  Society (ACS)](https://solutions.acs.org/solutions/text-and-data-mining/): ACS_crawler.py
