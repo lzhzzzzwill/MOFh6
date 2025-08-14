@@ -87,7 +87,8 @@ click on [📁 refer](https://github.com/lzhzzzzwill/MOFh6/tree/main/refer) to l
 - CEO appointed by LangGraph to coordinate and manage the execution of all agents and tools.
 
 ### [📜 main.py](https://github.com/lzhzzzzwill/MOFh6/blob/main/main.py)
-- CMO – Oversees data management and user interaction. To run MOFh6 locally, users should review the folder&script function above to configure the environment correctly. 
+- CMO – Oversees data management and user interaction. To run MOFh6 locally, users should review the folder&script function above to configure the environment correctly.
+  - MOFh6 is developed and tested on macOS M2. To run on Windows, only minor adjustments in [📁 refer](https://github.com/lzhzzzzwill/MOFh6/tree/main/refer) are needed.
 ```python
 # Python environment
 # Recommended: Python 3.10
