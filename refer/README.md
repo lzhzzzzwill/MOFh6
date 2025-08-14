@@ -19,7 +19,7 @@ line 63: with open('./refer/pathe.json', 'r', encoding='utf-8') as file:
 
 ```python
 line 23: with open(r"./refer/config.json") as con_file:
-line 37: download_dir = r'.../MOF_llm/langgraghdemo/input'  
+line 37: download_dir = r'./ulanggragh/input'  
 line 91: with open(r'./refer/pathe.json', 'r', encoding='utf-8') as file:
 line 146: subprocess.Popen([r'.../soffice.exe', '--headless', '--accept=socket,host=localhost,port=2002;urp;StarOffice.ComponentContext'])
 line 152: os.environ['UNO_PATH'] = r'.../LibreOffice/program/'
@@ -30,25 +30,25 @@ line 288: chrome_driver_path = r'.../chromedriver.exe'
 #### RSC_crawler.py
 
 ```python
-line 107: download_dir = .../MOF_llm/langgraghdemo/input' 
+line 107: download_dir = './ulanggragh/input' 
 ```
 
 #### Springer_crawler.py
 
 ```python
-line 136: download_dir = .../MOF_llm/langgraghdemo/input' 
+line 136: download_dir = './ulanggragh/input' 
 ```
 
 #### Wiley_crawler.py
 
 ```python
-line 108: download_dir = .../MOF_llm/langgraghdemo/input' 
+line 108: download_dir = './ulanggragh/input' 
 ```
 
 ##### *If you use windows, you should download the script "Wiley_crawler” at [refer_win](https://github.com/heniyiqishizhong/MOF_llm/tree/main/refer_win), and then modify.* 
 
 ```python
-line 106: download_dir = r'.../MOF_llm/langgraghdemo/input'
+line 106: download_dir = r'./ulanggragh/input'
 line 109: config_path = r'./refer/config.json'
 line 200: chrome_driver_path = r'.../chromedriver.exe' 
 ```
