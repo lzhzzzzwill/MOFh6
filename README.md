@@ -71,6 +71,7 @@ III. **Structure Visualization** – Generate visual representations of the spec
 
 ### datareading
 - The core meta data of MOFh6, click on [📁 datareading](https://github.com/lzhzzzzwill/MOFh6/tree/main/datareading) to learn more.
+COO – Focuses on data annotation and workflow design. All COO-curated and annotated datasets are stored in the [💾 MOFh6test](https://github.com/rendaoyuan/MOFh6test) repository.
 
 ### extrfinetune
 - CTO – Comprising MOFh6’s core LLM agent, is primarily responsible for Task I, which involves extracting synthesis information of specified MOFs from full-length scientific literature,
