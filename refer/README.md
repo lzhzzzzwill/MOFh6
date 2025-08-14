@@ -1,5 +1,7 @@
 # Major function
 
+The initial stage of MOFh6’s text-processing pipeline involves acquiring reference materials in strict compliance with institutional subscription policies, ensuring legal and ethical access to scientific literature.
+
 ## 0. The first you need to do 
 ### Modify the files' paths, the files are as follows:
 #### ACS_crawler.py
