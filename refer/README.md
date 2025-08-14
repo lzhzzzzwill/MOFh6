@@ -10,7 +10,7 @@ The initial stage of MOFh6’s text-processing pipeline involves acquiring refer
 
 ```python
 line 261: subprocess.Popen([r'...//soffice.exe', '--headless', '--accept=socket,host=localhost,port=2002;urp;StarOffice.ComponentContext'])
-line 268: os.environ['UNO_PATH'] = r'...//LibreOffice//program/'
+line 268: os.environ['UNO_PATH'] = r'...//LibreOffice//program//'
 line 270: subprocess.run(['python', r'...//unoconv-master//unoconv-master//unoconv', '-f', 'pdf', file_path], check=True)
 line 419: chrome_driver_path = r'...//chromedriver.exe'
 ```
@@ -18,7 +18,7 @@ line 419: chrome_driver_path = r'...//chromedriver.exe'
 #### RSC_crawler.py
 
 #### Springer_crawler.py
-##### *If you use windows, you should download the script "Springer_crawler.py” at [refer_win](https://github.com/heniyiqishizhong/MOF_llm/tree/main/refer_win), and then modify.
+##### *If you use windows, you should download the script "Springer_crawler.py” at [refer_win](https://github.com/heniyiqishizhong/MOF_llm/tree/main/refer_win), and then modify.*
 ```python
 line 44 DEFAULT_LIBREOFFICE_PATH = r"...//soffice.exe"
 line 45 DEFAULT_UNO_PROGRAM_DIR  = r"...//LibreOffice//program"
