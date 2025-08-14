@@ -3,20 +3,9 @@
 The initial stage of MOFh6’s text-processing pipeline involves acquiring reference materials in strict compliance with institutional subscription policies, ensuring legal and ethical access to scientific literature.
 
 ## 0. The first you need to do 
-### Modify the files' paths, the files are as follows:
 #### ACS_crawler.py
-```python
-line 109: download_dir = './ulanggragh/input' 
-```
 
 #### Elsevier_crawler.py
-
-```python
-line 21: with open("./refer/config.json") as con_file:
-line 35: download_dir = './ulanggragh/input' 
-line 63: with open('./refer/pathe.json', 'r', encoding='utf-8') as file:
-```
-
 ##### *If you use windows, you should download the script "Elsevier_crawler.py” at [refer_win](https://github.com/heniyiqishizhong/MOF_llm/tree/main/refer_win), and then modify.* 暂时没加入转换txt。。。
 
 ```python
@@ -31,16 +20,8 @@ line 288: chrome_driver_path = r'.../chromedriver.exe'
 
 #### RSC_crawler.py
 
-```python
-line 107: download_dir = './ulanggragh/input' 
-```
 
 #### Springer_crawler.py
-
-```python
-line 136: download_dir = './ulanggragh/input' 
-```
-
 ##### *If you use windows, you should download the script "Springer_crawler.py” at [refer_win](https://github.com/heniyiqishizhong/MOF_llm/tree/main/refer_win), and then modify.
 ```python
 line 44 DEFAULT_LIBREOFFICE_PATH = r"...\\soffice.exe"
@@ -51,11 +32,6 @@ line 205 download_dir = './ulanggraph/input'
 ```
 
 #### Wiley_crawler.py
-
-```python
-line 108: download_dir = './ulanggragh/input' 
-```
-
 ##### *If you use windows, you should download the script "Wiley_crawler” at [refer_win](https://github.com/heniyiqishizhong/MOF_llm/tree/main/refer_win), and then modify.* 
 
 ```python
