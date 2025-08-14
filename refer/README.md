@@ -4,14 +4,14 @@
 ### Modify the files' paths, the files are as follows:
 #### ACS_crawler.py
 ```python
-line 109: download_dir = .../MOF_llm/langgraghdemo/input'
+line 109: download_dir = './ulanggragh/input' 
 ```
 
 #### Elsevier_crawler.py
 
 ```python
 line 21: with open("./refer/config.json") as con_file:
-line 35: download_dir = ./ulanggragh/input' 
+line 35: download_dir = './ulanggragh/input' 
 line 63: with open('./refer/pathe.json', 'r', encoding='utf-8') as file:
 ```
 
