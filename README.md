@@ -95,7 +95,7 @@ click on [📁 refer](https://github.com/lzhzzzzwill/MOFh6/tree/main/refer) to l
 # Install dependencies
 pip install -r requirements.txt
 ```
-- For quick access without local setup, the CMO also provides an online [💻 app](https://huggingface.co/spaces/Willlzh/MOFh6), enabling immediate use without installation.
+- For quick access without local configuration, the CMO also provides an online [💻 app](https://huggingface.co/spaces/Willlzh/MOFh6), enabling immediate use in any syste without installation.
 
 ### If you want to use this tool, please cite:
 ```bibtex
