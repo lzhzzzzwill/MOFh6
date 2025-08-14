@@ -10,17 +10,17 @@ line 109: download_dir = .../MOF_llm/langgraghdemo/input'
 #### Elsevier_crawler.py
 
 ```python
-line 21: with open(".../MOF_llm/referdemo/config.json") as con_file:
-line 35: download_dir = .../MOF_llm/langgraghdemo/input' 
-line 63: with open('.../MOF_llm/referdemo/pathe.json', 'r', encoding='utf-8') as file:
+line 21: with open("./refer/config.json") as con_file:
+line 35: download_dir = ./ulanggragh/input' 
+line 63: with open('./refer/pathe.json', 'r', encoding='utf-8') as file:
 ```
 
 ##### *If you use windows, you should download the script "Elsevier_crawler.py” at [refer_win](https://github.com/heniyiqishizhong/MOF_llm/tree/main/refer_win), and then modify.* 暂时没加入转换txt。。。
 
 ```python
-line 23: with open(r".../MOF_llm/referdemo/config.json") as con_file:
+line 23: with open(r"./refer/config.json") as con_file:
 line 37: download_dir = r'.../MOF_llm/langgraghdemo/input'  
-line 91: with open(r'.../MOF_llm/referdemo/pathe.json', 'r', encoding='utf-8') as file:
+line 91: with open(r'./refer/pathe.json', 'r', encoding='utf-8') as file:
 line 146: subprocess.Popen([r'.../soffice.exe', '--headless', '--accept=socket,host=localhost,port=2002;urp;StarOffice.ComponentContext'])
 line 152: os.environ['UNO_PATH'] = r'.../LibreOffice/program/'
 line 154: subprocess.run(['python', r'.../unoconv-master/unoconv-master/unoconv', '-f', 'pdf', file_path], check=True)
@@ -49,7 +49,7 @@ line 108: download_dir = .../MOF_llm/langgraghdemo/input'
 
 ```python
 line 106: download_dir = r'.../MOF_llm/langgraghdemo/input'
-line 109: config_path = r'.../MOF_llm/referdemo/config.json'
+line 109: config_path = r'./refer/config.json'
 line 200: chrome_driver_path = r'.../chromedriver.exe' 
 ```
 
