@@ -41,6 +41,15 @@ line 107: download_dir = './ulanggragh/input'
 line 136: download_dir = './ulanggragh/input' 
 ```
 
+##### *If you use windows, you should download the script "Springer_crawler.py” at [refer_win](https://github.com/heniyiqishizhong/MOF_llm/tree/main/refer_win), and then modify.
+```python
+line 44 DEFAULT_LIBREOFFICE_PATH = r"...\\soffice.exe"
+line 45 DEFAULT_UNO_PROGRAM_DIR  = r"C:...\\LibreOffice\\program"      # 用于 UNO_PATH
+line 46 DEFAULT_UNOCONV_PATH     = r"C:...\\LibreOffice\\unoconv-master\\unoconv.py"  # 也可设为 unoconv.exe
+line 47 DEFAULT_CHROMEDRIVER     = r"C:...\\chromedriver.exe"
+line 205 download_dir = './ulanggraph/input'
+```
+
 #### Wiley_crawler.py
 
 ```python
