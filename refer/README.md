@@ -2,7 +2,7 @@
 
 The initial stage of MOFh6’s text-processing pipeline involves acquiring reference materials in strict compliance with institutional subscription policies, ensuring legal and ethical access to scientific literature.
 
-## 0. The first you need to do 
+## 0. The suggested script is as follows:
 #### ACS_crawler.py
 
 #### Elsevier_crawler.py
@@ -20,14 +20,13 @@ line 288: chrome_driver_path = r'.../chromedriver.exe'
 
 #### RSC_crawler.py
 
-
 #### Springer_crawler.py
 ##### *If you use windows, you should download the script "Springer_crawler.py” at [refer_win](https://github.com/heniyiqishizhong/MOF_llm/tree/main/refer_win), and then modify.
 ```python
 line 44 DEFAULT_LIBREOFFICE_PATH = r"...\\soffice.exe"
-line 45 DEFAULT_UNO_PROGRAM_DIR  = r"C:...\\LibreOffice\\program"
-line 46 DEFAULT_UNOCONV_PATH     = r"C:...\\LibreOffice\\unoconv-master\\unoconv.py"
-line 47 DEFAULT_CHROMEDRIVER     = r"C:...\\chromedriver.exe"
+line 45 DEFAULT_UNO_PROGRAM_DIR  = r"...\\LibreOffice\\program"
+line 46 DEFAULT_UNOCONV_PATH     = r"...\\LibreOffice\\unoconv-master\\unoconv"
+line 47 DEFAULT_CHROMEDRIVER     = r"...\\chromedriver.exe"
 line 205 download_dir = './ulanggraph/input'
 ```
 
@@ -44,7 +43,7 @@ line 200: chrome_driver_path = r'.../chromedriver.exe'
 
 - Contents of this folder are for building the meta dataset
 ### 1.1. Obtaining the original CCDC code and corresponding publication information of MOFs
-- Script: Publisher-statistics.py
+- Script: Publisher_statistics.py
 
 ### 1.2. Data mining from obtained publications
 
