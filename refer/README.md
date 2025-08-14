@@ -6,16 +6,13 @@ The initial stage of MOFh6’s text-processing pipeline involves acquiring refer
 #### ACS_crawler.py
 
 #### Elsevier_crawler.py
-##### *If you use windows, you should download the script "Elsevier_crawler.py” at [refer_win](https://github.com/heniyiqishizhong/MOF_llm/tree/main/refer_win), and then modify.* 暂时没加入转换txt。。。
+##### *If you use windows, you should download the script "Elsevier_crawler.py” at [refer_win](https://github.com/heniyiqishizhong/MOF_llm/tree/main/refer_win), and then modify.*
 
 ```python
-line 23: with open(r"./refer/config.json") as con_file:
-line 37: download_dir = r'./ulanggragh/input'  
-line 91: with open(r'./refer/pathe.json', 'r', encoding='utf-8') as file:
-line 146: subprocess.Popen([r'.../soffice.exe', '--headless', '--accept=socket,host=localhost,port=2002;urp;StarOffice.ComponentContext'])
-line 152: os.environ['UNO_PATH'] = r'.../LibreOffice/program/'
-line 154: subprocess.run(['python', r'.../unoconv-master/unoconv-master/unoconv', '-f', 'pdf', file_path], check=True)
-line 288: chrome_driver_path = r'.../chromedriver.exe'
+line 261: subprocess.Popen([r'.../soffice.exe', '--headless', '--accept=socket,host=localhost,port=2002;urp;StarOffice.ComponentContext'])
+line 268: os.environ['UNO_PATH'] = r'.../LibreOffice/program/'
+line 270: subprocess.run(['python', r'.../unoconv-master/unoconv-master/unoconv', '-f', 'pdf', file_path], check=True)
+line 419: chrome_driver_path = r'.../chromedriver.exe'
 ```
 
 #### RSC_crawler.py
@@ -27,15 +24,12 @@ line 44 DEFAULT_LIBREOFFICE_PATH = r"...\\soffice.exe"
 line 45 DEFAULT_UNO_PROGRAM_DIR  = r"...\\LibreOffice\\program"
 line 46 DEFAULT_UNOCONV_PATH     = r"...\\LibreOffice\\unoconv-master\\unoconv"
 line 47 DEFAULT_CHROMEDRIVER     = r"...\\chromedriver.exe"
-line 205 download_dir = './ulanggraph/input'
 ```
 
 #### Wiley_crawler.py
 ##### *If you use windows, you should download the script "Wiley_crawler” at [refer_win](https://github.com/heniyiqishizhong/MOF_llm/tree/main/refer_win), and then modify.* 
 
 ```python
-line 106: download_dir = r'./ulanggragh/input'
-line 109: config_path = r'./refer/config.json'
 line 200: chrome_driver_path = r'.../chromedriver.exe' 
 ```
 
