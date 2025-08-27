@@ -1,6 +1,9 @@
 import sys
 import logging
 from pathlib import Path
+import os#####相对路径
+
+os.chdir(os.path.dirname(__file__))
 
 # 添加项目根目录到 Python 路径（必须在其他本地导入之前）
 project_root = Path(__file__).parent / "request"
@@ -16,7 +19,7 @@ def main():
         print("\n🌟 Initializing MOF Analysis System...\n")
         
         # Load configuration
-        config_path = '/Users/linzuhong/学习文件/3-博/博四/C2ML/extrfinetune/config.json' ######
+        config_path = './extrfinetune/config.json' 
         config = load_config(config_path)
         query_system = ChemicalQuerySystem(config)
         
