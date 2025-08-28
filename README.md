@@ -113,4 +113,6 @@ pip install -r requirements.txt
 }
 ```
 
-- The software copyright is currently under review.
+## 📄 Copyright Registration
+This software has been registered with the National Copyright Administration of China.  
+Registration No.: **2025SR1621800**
