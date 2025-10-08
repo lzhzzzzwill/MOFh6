@@ -103,7 +103,7 @@ pip install -r requirements.txt
 ### If you want to use this tool, please cite:
 ```bibtex
 @misc{lin2025reshapingmofstextmining,
-      title={Reshaping MOFs text mining with a dynamic multi-agents framework of large language model}, 
+      title={Reshaping MOFs synthesis conditions mining with a dynamic multi-agents framework of large language model}, 
       author={Zuhong Lin and Daoyuan Ren and Kai Ran and Jing Sun and Songlin Yu and Xuefeng Bai and Xiaotian Huang and Haiyang He and Pengxu Pan and Ying Fang and Zhanglin Li and Haipu Li and Jingjing Yao},
       year={2025},
       eprint={2504.18880},
