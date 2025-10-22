@@ -92,11 +92,15 @@ click on [📁 refer](https://github.com/lzhzzzzwill/MOFh6/tree/main/refer) to l
 - CMO – Oversees data management and user interaction. To run MOFh6 locally, users should review the folder&script function above to configure the environment correctly.
   - MOFh6 is developed and tested on macOS M2. To run on Windows, only minor adjustments in [📁 refer](https://github.com/lzhzzzzwill/MOFh6/tree/main/refer) are needed.
 
-```python
+```bash
 # Python environment
 # Recommended: Python 3.10
 # Install dependencies
+
+git clone https://github.com/lzhzzzzwill/MOFh6.git
+cd MOFh6
 pip install -r requirements.txt
+python main.py
 ```
 - For quick access without local configuration, the CMO also provides an online [💻 app](https://huggingface.co/spaces/Willlzh/MOFh6), enabling immediate use in any syste without installation.
 
