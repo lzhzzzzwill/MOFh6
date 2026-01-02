@@ -47,7 +47,7 @@ line 200: chrome_driver_path = r'...//chromedriver.exe'
 
   - [Springer Science and Business Media LLC (Springer)](https://www.springernature.com/gp/researchers/text-and-data-mining): Springer_crawler.py
 
-- **Note**: *you need to apply for TDM tokens by yourself to run these scripts.* 🔗**Please click on the hyperlink.**⬆️
+- **Note**: *you need to apply for TDM tokens by yourself to run these scripts.* 🔗Please click on the hyperlink.⬆️
 
 ### Auxiliary content
 - Config.json: The publishers' TDM tokens, which require users to obtain them by themselves.
