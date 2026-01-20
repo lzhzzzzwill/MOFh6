@@ -68,7 +68,7 @@ I. **Synthesis Extraction** – Retrieve detailed synthesis descriptions for spe
 II. **Pore Structure Analysis** – Obtain pore structure parameters for the target MOFs.  
 III. **Structure Visualization** – Generate visual representations of the specified MOFs.  
 
-<img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/MOFh6pipline.png" alt="MOFh6 Pipeline" width="600">
+<img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/MOFh6pipline1.png" alt="MOFh6 Pipeline" width="600">
 
 ### datareading
 - The core meta data of MOFh6, click on [📁 datareading](https://github.com/lzhzzzzwill/MOFh6/tree/main/datareading) to learn more.
