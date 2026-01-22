@@ -1,5 +1,4 @@
 # <img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/app.PNG" alt="MOFh6 Logo" width="80"> MOFh6
-<img src="https://github.com/lzhzzzzwill/MOFh6/blob/main/icon/llmtoc.tif" alt="MOFh6 TOC" width="600">
 
 From the challenge of sifting through vast, ambiguous MOF literature to the clarity of structured, actionable data, **MOFh6** emerges as the solution. It is an intelligent, multi-agent system that transforms unstructured scientific text on metal–organic frameworks (MOFs) into analysis-ready synthesis and property data. By combining large language models (LLMs) with rule-based agents, MOFh6 delivers high-accuracy, cost-efficient extraction, enabling scalable, data-driven materials discovery.
 
