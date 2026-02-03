@@ -2,7 +2,7 @@
 
 The initial stage of MOFh6’s text-processing pipeline involves acquiring reference materials in strict compliance with institutional subscription policies, ensuring legal and ethical access to scientific literature.
 
-## 0. The suggested script is as follows:
+## 1. The suggested script is as follows:
 #### ACS_crawler.py
 
 #### Elsevier_crawler.py
@@ -33,7 +33,7 @@ line 47 DEFAULT_CHROMEDRIVER     = r"...//chromedriver.exe"
 line 200: chrome_driver_path = r'...//chromedriver.exe' 
 ```
 
-## 1. Construction of meta dataset
+## 2. Construction of meta dataset
 
 - We provide crawler scripts for data mining from the following publications
 
