@@ -106,13 +106,14 @@ python main.py
 ### If you want to use this tool, please cite:
 ```bibtex
 @misc{lin2025reshapingmofstextmining,
-      title={Reshaping MOFs synthesis conditions mining with a dynamic multi-agents framework of large language model}, 
+      title = {Reshaping MOFs synthesis conditions mining with a dynamic multi-agents framework of large language model},
       author={Zuhong Lin and Daoyuan Ren and Kai Ran and Jing Sun and Songlin Yu and Xuefeng Bai and Xiaotian Huang and Haiyang He and Pengxu Pan and Ying Fang and Zhanglin Li and Haipu Li and Jingjing Yao},
-      year={2025},
-      eprint={2504.18880},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2504.18880}, 
+      journal = {Transactions of Materials Research},
+      volume = {2},
+      number = {1},
+      pages = {100176},
+      year = {2026},
+      doi = {https://doi.org/10.1016/j.tramat.2026.100176}
 }
 ```
 
