@@ -1,0 +1,17 @@
+._*
+.DS_Store
+__pycache__/
+*.py[cod]
+*.log
+.env
+.env.*
+chromedriver-mac-arm64/
+cif_files/
+processed_pdfs/
+ulanggraph/input/
+ulanggraph/output/
+ulanggraph/temp/
+extrfinetune/config.json
+refer/config.json
+request/config.json
+datareading/des_mate.json

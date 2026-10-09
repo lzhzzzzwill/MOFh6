@@ -15,9 +15,9 @@ class CrystalDataComparator:
         with open(config_path, 'r', encoding='utf-8') as f:
             config = json.load(f)
 
-        self.api_key = config.get('apikey')
-        self.base_url = config.get('baseurl')
-        self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
+        self.api_key = config.get('openaiapikey')
+        #self.base_url = config.get('baseurl')
+        self.client = OpenAI(api_key=self.api_key)#, base_url=self.base_url)
 
     @staticmethod
     def load_json(file_path: str) -> dict:

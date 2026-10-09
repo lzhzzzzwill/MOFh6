@@ -3,6 +3,7 @@ import json
 from openai import OpenAI
 from extrfinetune.prompt.sstru1 import prompt_template
 from tqdm import tqdm
+from extrfinetune.file_utils import list_visible_text_files
 
 class MOFDataProcessor:
     def __init__(self, config_path: str):
@@ -13,7 +14,7 @@ class MOFDataProcessor:
         with open(config_path, 'r', encoding='utf-8') as f:
             config = json.load(f)
 
-        self.client = OpenAI(api_key=config.get('apikey'), base_url=config.get('baseurl'))
+        self.client = OpenAI(api_key=config.get('openaiapikey'))#, base_url=config.get('baseurl'))
 
     @staticmethod
     def parse_file_to_entries(input_file: str) -> list:
@@ -106,7 +107,7 @@ class MOFDataProcessor:
         all_entries = 0
         processed_entries = 0
 
-        txt_files = [os.path.join(input_dir, fn) for fn in os.listdir(input_dir) if fn.lower().endswith('.txt')]
+        txt_files = [os.path.join(input_dir, fn) for fn in list_visible_text_files(input_dir)]
 
         for txt_file in tqdm(txt_files, desc="Processing files"):
             entries = self.parse_file_to_entries(txt_file)

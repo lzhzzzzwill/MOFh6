@@ -1,0 +1,2 @@
+# Install alongside requirements.txt in the same Python environment.
+mcp>=1.27,<3

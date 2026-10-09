@@ -1,68 +1,62 @@
 import sys
 import logging
 from pathlib import Path
-import os#####相对路径
-
-os.chdir(os.path.dirname(__file__))#####相对路径
 
 # 添加项目根目录到 Python 路径（必须在其他本地导入之前）
-project_root = Path(__file__).parent / "request"
+project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
 # 现在再导入本地模块
-from request.config.config import load_config
-from request.core.query_system import ChemicalQuerySystem
+from config.config import load_config
+from core.query_system import ChemicalQuerySystem
 
 def main():
     """Main function with enhanced error handling and user interaction"""
     try:
         print("\n🌟 Initializing MOF Analysis System...\n")
-        
+
         # Load configuration
-        config_path = './extrfinetune/config.json' ######'/Users/linzuhong/学习文件/3-博/博四/C2ML/extrfinetune/config.json'
+        config_path = '/Users/linzuhong/学习文件/3-博/博四/C2ML/extrfinetune/config.json' ######
         config = load_config(config_path)
         query_system = ChemicalQuerySystem(config)
-        
+
         # Print welcome message
         print("💎 Welcome to MOF Analysis System!")
         print("\n📋 Available Commands:")
-        print("📄 'How to synthesize <code/name>' - Obtain the synthesized text")
+        print("🔎 'help' - Show help and examples")
         print("📄 'process pdf <path>' - Process a PDF document")
         print("🔬 'workflow <path>' - Run analysis workflow on processed PDF")
+        print("📚 'list pdfs' - Show processed documents")
         print("💾 'show saved' - Show saved documents")
         print("📥 'download cif <code>' - Download CIF file for a CCDC code")
         print("🔮 'visualize <code>' - Visualize crystal structure for a CCDC code")
-        print("📚 'rag ingest <path>' - Index a text file or folder in the literature knowledge base")
-        print("💬 Ask paper questions naturally - indexed materials are routed to RAG automatically")
-        print("🧰 'rag ask <question>' - Optional: force a question through RAG")
-        print("💡 'suggest questions <code/topic>' - Recommend answerable questions with gpt-6-luna")
-        print("🕸️  'graph show <code>' - Summarize accumulated graph knowledge in natural language")
-        print("🔗 'graph similar <code>' - Show MOFs with comparable reported synthesis routes")
-        print("🧪 'graph recommend <code>' - Summarize similar published synthesis cases")
-        print("🛠️  'graph raw <code>' - Show raw graph records for debugging")
-        print("📊 'graph stats' - Show persistent RAG and graph statistics")
-        print("🔄 'graph update <md/json>' - Incrementally import a structured artifact")
         print("⏹️  'q!' - Exit the system\n")
+        print("\n💡 Example usage:")
+        print("1. First process a PDF:")
+        print("   process pdf /path/to/your.pdf")
+        print("2. Then run the workflow:")
+        print("   workflow /path/to/your.pdf")
+        print("\n🚀 Ready to start! Type your command below:\n")
 
         # Main interaction loop (保持原有的循环逻辑不变)
         while True:
             try:
                 user_input = input("Query> ").strip()
-                
+
                 if not user_input:
                     continue
-                
-                if user_input.lower() in {'q!', 'q！'}:
+
+                if user_input.lower() == 'q!':
                     print("\n👋 Thank you for using MOF Analysis System. Goodbye!")
                     break
-                
+
                 if user_input.lower().startswith('process pdf'):
                     _, _, pdf_path = user_input.partition(' pdf ')
                     pdf_path = pdf_path.strip()
                     if not pdf_path:
                         print("\n❌ Please provide a PDF file path")
                         continue
-                        
+
                     result = query_system.process_pdf(pdf_path)
                     # 删除这里的重复打印内容，因为已经在 process_pdf 中打印过了
                     if not result:
@@ -81,7 +75,7 @@ def main():
                             print(doc['preview'])
                     else:
                         print("\n💤 No saved documents found")
-                    
+
                 if user_input.lower() == 'list pdfs':
                     if hasattr(query_system, 'pdf_content') and query_system.pdf_content:
                         print("\n📚 Processed Documents:")
@@ -94,10 +88,10 @@ def main():
                     else:
                         print("\n💤 No PDFs have been processed yet")
                     continue
-                
+
                 answer = query_system.get_answer(user_input)
                 print(f"\n{answer}\n")
-                
+
             except KeyboardInterrupt:
                 print("\n⌨️  Use 'q!' to exit properly")
                 continue

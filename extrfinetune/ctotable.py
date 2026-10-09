@@ -6,6 +6,7 @@ from typing import List, Dict, Optional
 from openai import OpenAI
 from tqdm import tqdm
 from extrfinetune.prompt.elsedatatable import prompt_template
+from extrfinetune.file_utils import list_visible_text_files
 
 class ElsevierTableExtractor:
     def __init__(self, config_path: str, input_folder: str, output_file: str):
@@ -19,11 +20,11 @@ class ElsevierTableExtractor:
         with open(config_path, 'r', encoding='utf-8') as f:
             config = json.load(f)
 
-        self.api_key = config.get('apikey')
-        self.base_url = config.get('baseurl')
+        self.api_key = config.get('openaiapikey')
+        #self.base_url = config.get('baseurl')
 
         # 创建 OpenAI 客户端
-        self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
+        self.client = OpenAI(api_key=self.api_key)#, base_url=self.base_url)
         self.input_folder = input_folder
         self.output_file = output_file
         self.prompt_template = prompt_template
@@ -122,7 +123,7 @@ class ElsevierTableExtractor:
         :return: 处理结果字典
         """
         results = {}
-        files = [f for f in os.listdir(self.input_folder) if f.endswith(".txt")]
+        files = list_visible_text_files(self.input_folder)
 
         with tqdm(total=len(files), desc="Processing files", unit="file") as outer_pbar:
             for filename in files:

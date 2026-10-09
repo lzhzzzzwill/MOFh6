@@ -4,6 +4,7 @@ import sys
 import logging
 import json
 import pandas as pd
+from dataclasses import asdict
 from pathlib import Path
 from datetime import datetime  
 from typing import Optional, Dict, List, Tuple
@@ -21,6 +22,9 @@ from utils.re_cif import HuggingFaceDatasetDownloader  # CIF文件获取
 from utils.vis_cif import CrystalViewer, CrystalViewerApp  # 结构可视化
 
 from ulanggraph.workflow_manager import MOFWorkflowManager  
+from knowledge import KnowledgeStore, StructuredKnowledgeIngestor, similar_cases, recommend_cases
+from knowledge.ingredient_qa import IngredientCaseQA
+from rag import MOFRAGService
 
 # 添加项目根目录到 Python 路径
 project_root = Path(__file__).parent.parent.parent
@@ -40,6 +44,7 @@ class ChemicalQuerySystem:
             self.prompts = ChemicalPrompts()
             self.query_handler = EnhancedQueryHandler(self.df, self.client)
             self.pdf_content = {}
+            self.active_rag_context: Optional[str] = None
             # 添加CIF文件目录配置
             self.cif_folder = "./cif_files" ######/Users/linzuhong/学习文件/3-博/博四/C2ML/cif_files
             os.makedirs(self.cif_folder, exist_ok=True) 
@@ -48,8 +53,24 @@ class ChemicalQuerySystem:
             os.makedirs(self.output_dir, exist_ok=True)
             # 添加时间戳属性
             self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            # Persistent literature RAG and incremental knowledge graph.
+            knowledge_dir = project_root / "ulanggraph" / "output" / "knowledge"
+            self.knowledge_store = KnowledgeStore(str(knowledge_dir / "mofh6.db"))
+            self.knowledge_ingestor = StructuredKnowledgeIngestor(self.knowledge_store, pubchem_enabled=True)
+            self.rag = MOFRAGService(self.knowledge_store, self.client)
+            self.ingredient_qa = IngredientCaseQA(self.knowledge_store, self.rag)
+            try:
+                embedding_status = self.rag.ensure_embeddings()
+                if embedding_status["embedded"]:
+                    logging.info(
+                        "Backfilled %s literature embeddings with %s",
+                        embedding_status["embedded"],
+                        self.rag.embedding_model,
+                    )
+            except Exception as embedding_error:
+                logging.warning(f"Embedding backfill deferred: {embedding_error}")
 
-    def get_synthesis_info(self, query: str) -> str:
+    def get_synthesis_info(self, query: str, language: str = "en") -> str:
         """搜索并获取化合物的合成信息"""
         try:
             # 读取元数据文件
@@ -101,12 +122,35 @@ class ChemicalQuerySystem:
             # 使用DOIRouter处理下载
             router = DOIRouter()
             router.route_and_execute(temp_file)
+
+            ccdc_code = str(compound_data['CCDC_code'].iloc[0]).upper()
+            self.active_rag_context = ccdc_code
+            doi = str(compound_data['DOI'].iloc[0])
+            downloaded_text = project_root / "ulanggraph" / "input" / f"{ccdc_code}.txt"
+            if downloaded_text.exists():
+                try:
+                    self.rag.ingest_document(
+                        str(downloaded_text),
+                        title=f"{ccdc_code} literature",
+                        doi=doi,
+                        metadata={"ccdc_code": ccdc_code, "stage": "downloaded"},
+                    )
+                except Exception as rag_error:
+                    logging.warning(f"Downloaded literature could not be indexed for RAG: {rag_error}")
             
             # 清理临时文件（可选）
             # if os.path.exists(temp_file):
             #     os.remove(temp_file)
             
-            return f"\n✅ Synthesis information retrieval initiated\n💡 Please use 'workflow {compound_data['CCDC_code'].iloc[0]}' to analyze the downloaded content"
+            if language == "zh":
+                return (
+                    f"\n✅ 文献获取已完成"
+                    f"\n🧪 请使用 'workflow {ccdc_code}' 抽取结构化合成条件。"
+                )
+            return (
+                f"\n✅ Literature retrieval completed"
+                f"\n🧪 Run 'workflow {ccdc_code}' to extract structured synthesis data."
+            )
             
         except Exception as e:
             logging.error(f"Error retrieving synthesis info: {e}")
@@ -141,6 +185,14 @@ class ChemicalQuerySystem:
                 
                 with open(text_file, 'w', encoding='utf-8') as f:
                     f.write(text)
+
+                # Persist page-aware chunks immediately; reprocessing the same path is idempotent.
+                self.rag.ingest_document(
+                    source_path=pdf_path,
+                    text=text,
+                    title=metadata.title or pdf_info['filename'],
+                    metadata=asdict(metadata)
+                )
                 
                 result = {
                     'filename': pdf_info['filename'],
@@ -208,28 +260,252 @@ class ChemicalQuerySystem:
         return saved_docs
 
     def _handle_pdf_query(self, question: str) -> str:
-        """Handle PDF-related queries"""
-        if not self.pdf_content:
-            return "No PDF documents have been processed yet."
-            
+        """Handle PDF questions through chunk retrieval instead of full-document prompting."""
         try:
-            # Create context from PDF content
-            context = "Available documents:\n"
-            for path, info in self.pdf_content.items():
-                context += f"- {info['filename']} ({info['metadata'].page_count} pages)\n"
-            
-            # Get response from OpenAI
-            prompt = f"""
-            Context: {context}
-            PDF contents: {[info['text'] for info in self.pdf_content.values()]}
-            Question: {question}
-            """
-            
-            response = self._query_openai(prompt)
-            return response
+            return self.rag.ask(question, entity_key=self._find_graph_entity(question))
         except Exception as e:
-            logging.error(f"Error handling PDF query: {str(e)}")
-            return f"Error processing PDF query: {str(e)}"
+            logging.error(f"Error handling RAG query: {str(e)}")
+            return f"Error processing literature query: {str(e)}"
+
+    def _find_graph_entity(self, text: str) -> Optional[str]:
+        """Find a graph entity mentioned in user text without another LLM call."""
+        candidates = re.findall(r'\b[A-Za-z][A-Za-z0-9_-]{3,}\b', text)
+        ignored = {
+            'something', 'anything', 'about', 'storage', 'adsorption', 'material',
+            'framework', 'compound', 'please', 'could', 'would', 'what', 'which',
+        }
+        try:
+            for candidate in candidates:
+                if candidate.lower() in ignored:
+                    continue
+                resolver = getattr(self.knowledge_store, 'resolve_exact_entity', None)
+                if resolver:
+                    resolved = resolver(candidate)
+                    if resolved:
+                        return resolved
+                elif self.knowledge_store.graph_context(candidate, limit=1)['nodes']:
+                    return candidate
+        except Exception as e:
+            logging.warning(f"Knowledge graph lookup unavailable: {e}")
+        return None
+
+    @staticmethod
+    def _is_system_query(text: str) -> bool:
+        """Recognize help requests without treating scientific 'properties' questions as help."""
+        return any(phrase in text.lower() for phrase in (
+            'what can you do', 'capabilities', 'help', 'how to use',
+            'show me an example', 'command syntax', 'available commands',
+            '你能做什么', '帮助', '怎么使用', '命令格式',
+        ))
+
+    @staticmethod
+    def _is_material_overview_question(question: str, entity: str) -> bool:
+        """A broad material introduction is not a missing specific measurement."""
+        remainder = re.sub(re.escape(entity), "", question, flags=re.I)
+        remainder = re.sub(r"[^a-z\u4e00-\u9fff]+", " ", remainder.lower()).strip()
+        return remainder in {
+            "what about", "tell me about", "tell me abou", "describe", "overview",
+            "give me an overview of", "introduce", "介绍", "请介绍", "介绍一下",
+            "说说", "讲讲", "是什么", "有什么信息",
+        }
+
+    def _natural_rag_context(self, question: str) -> Optional[str]:
+        """Resolve natural paper questions without requiring a visible RAG command."""
+        entity = self._find_graph_entity(question)
+        if entity:
+            self.active_rag_context = entity
+            return entity
+        # A CCDC refcode can be asked about before its structured graph is built.
+        # RAG will then search only that refcode's document and abstain if absent.
+        for code in re.findall(r'(?<![A-Za-z0-9])[A-Z]{6}(?![A-Za-z0-9])', question):
+            if code not in {'PLEASE', 'LIGAND', 'METALS', 'SOLVENT'}:
+                self.active_rag_context = code
+                return code
+        if not self.active_rag_context:
+            return None
+        normalized_question = re.sub(r'[^a-z0-9\u4e00-\u9fff]+', '', question.lower())
+        try:
+            for item in self.knowledge_store.list_suggestions(self.active_rag_context):
+                shown = re.sub(r'[^a-z0-9\u4e00-\u9fff]+', '', item['question'].lower())
+                if shown and normalized_question == shown:
+                    return self.active_rag_context
+        except Exception as suggestion_error:
+            logging.debug(f"Suggestion route lookup unavailable: {suggestion_error}")
+        lower = question.lower()
+        follow_up_markers = (
+            ' it ', ' its ', 'this material', 'this framework', 'this compound',
+            'the material', 'the framework', 'what about', 'how about',
+            '它', '该材料', '这个材料', '该框架', '这个框架', '那么',
+        )
+        research_terms = (
+            'topology', 'structure', 'framework', 'stability', 'characterization',
+            'spectroscopy', 'diffraction', 'mechanism', 'application', 'performance',
+            'adsorption', 'catalysis', 'conductivity', 'luminescence', 'magnetic',
+            'porosity', 'evidence', 'reported', 'compare', 'limitation',
+            'synthesis', 'temperature', 'yield', 'solvent', 'linker', 'crystal',
+            'coordination', 'geometry', 'donor', 'nitrate', 'aromatic', 'interaction',
+            'assembly', 'metal center', 'bond length', 'bond angle', 'dimensionality',
+            'symmetry', 'complex 1', 'complex 2', 'complex 3',
+            '拓扑', '结构', '框架', '稳定性', '表征', '光谱', '衍射', '机理',
+            '应用', '性能', '吸附', '催化', '导电', '发光', '磁性', '孔隙',
+            '证据', '报道', '比较', '局限', '合成', '温度', '产率', '溶剂', '配体', '晶体',
+            '配位', '几何', '给体', '硝酸根', '芳环', '相互作用', '组装', '键长', '键角', '维度', '对称性',
+        )
+        padded = f" {lower} "
+        if any(marker in padded for marker in follow_up_markers):
+            return self.active_rag_context
+        if any(term in lower for term in research_terms):
+            return self.active_rag_context
+        return None
+
+    def ingest_rag_path(self, path: str) -> str:
+        try:
+            result = self.rag.ingest_path(path)
+            return f"✅ RAG indexing complete: {json.dumps(result, ensure_ascii=False)}"
+        except Exception as e:
+            return f"❌ RAG indexing failed: {e}"
+
+    def update_graph_from_artifact(self, path: str) -> str:
+        try:
+            if path.lower().endswith('.md'):
+                result = self.knowledge_ingestor.ingest_synthesis_markdown(path)
+            elif path.lower().endswith('.json'):
+                result = self.knowledge_ingestor.ingest_crystal_json(path)
+            else:
+                return "❌ Graph update supports .md synthesis tables or .json crystal tables."
+            return f"✅ Knowledge graph updated: {json.dumps(result, ensure_ascii=False)}"
+        except Exception as e:
+            return f"❌ Knowledge graph update failed: {e}"
+
+    def show_similar_mofs(self, code: str, language: str = "en") -> str:
+        cases = similar_cases(self.knowledge_store, code, limit=4)
+        if not cases:
+            return (f"没有找到与 {code.upper()} 合成路线足够相似的已报道材料。"
+                    if language == "zh" else
+                    f"No reported MOF with a sufficiently similar synthesis route was found for {code.upper()}.")
+        lines = [f"{code.upper()} 的相似合成路线：" if language == "zh"
+                 else f"Synthesis routes similar to {code.upper()}:"]
+        for case in cases:
+            shared = case.get("shared") or {}
+            reasons = "; ".join(
+                f"{field.replace('_', ' ')}: {', '.join(values)}"
+                for field, values in shared.items() if values
+            )
+            lines.append(f"- {case['mof']} ({case['score']:.2f}): {reasons}. "
+                         f"{case['paper']}")
+        return "\n".join(lines)
+
+    def show_case_recommendation(self, code: str, language: str = "en") -> str:
+        result = recommend_cases(self.knowledge_store, code)
+        if result["status"] == "unknown_mof":
+            return f"MOF not found: {code}" if language == "en" else f"未找到材料：{code}"
+        if not result["cases"]:
+            return (f"没有足够相似的独立合成案例可供 {code.upper()} 参考。"
+                    if language == "zh" else
+                    f"No sufficiently similar independent synthesis cases are available for {code.upper()}.")
+        lines = [f"{code.upper()} 的已报道合成参考案例：" if language == "zh"
+                 else f"Reported synthesis cases relevant to {code.upper()}:"]
+        for case in result["cases"]:
+            conditions = []
+            if case["temperature_c"] is not None:
+                conditions.append(f"{case['temperature_c']:g} °C")
+            if case["time_hours"] is not None:
+                conditions.append(f"{case['time_hours']:g} h")
+            if case["solvents"]:
+                conditions.append("/".join(case["solvents"]))
+            lines.append(f"- {case['mof']} (similarity {case['score']:.2f}): "
+                         f"{', '.join(conditions)}; source: {case['paper']}")
+        if result["status"] == "limited_cases":
+            lines.append("独立案例少于3个，暂不建议数值范围。" if language == "zh" else
+                         "Fewer than three independent cases; no numeric range is recommended.")
+        else:
+            for key, label, unit in (
+                ("temperature_range_c", "Temperature", "°C"),
+                ("time_range_hours", "Time", "h"),
+            ):
+                bounds = result.get(key) or []
+                if len(bounds) == 2 and all(value is not None for value in bounds):
+                    lines.append(f"{label}: {bounds[0]:g}–{bounds[1]:g} {unit}")
+            if result.get("solvent_systems"):
+                lines.append("Reported solvent systems: " + "; ".join(result["solvent_systems"]))
+            lines.append("These are published case ranges, not a predicted guarantee of synthesis success.")
+        return "\n".join(lines)
+
+    def show_raw_graph_context(self, key: str) -> str:
+        context = self.knowledge_store.graph_context(key)
+        if not context['nodes']:
+            return f"No graph entity found for: {key}"
+        lines = [f"Knowledge graph context for {key}:"]
+        for node in context['nodes']:
+            lines.append(f"- [{node['node_type']}] {node['label']}: {node['properties']}")
+        for edge in context['edges']:
+            lines.append(
+                f"- {edge['source_label']} --{edge['edge_type']}--> {edge['target_label']}"
+                f" {edge['properties'] if edge['properties'] else ''}"
+            )
+        return '\n'.join(lines)
+
+    def show_graph_context(self, key: str, language: str = "en") -> str:
+        """Show a researcher-facing natural-language graph summary."""
+        try:
+            self.active_rag_context = key.upper()
+            summary = self.rag.describe_graph(key, language=language)
+            title = "知识图谱解读" if language == "zh" else "knowledge-graph summary"
+            next_step = (
+                f"💡 可继续输入: suggest questions {key.upper()}" if language == "zh"
+                else f"💡 Next: suggest questions {key.upper()}"
+            )
+            return (
+                f"🕸️  {key.upper()} {title}\n"
+                f"{'=' * 72}\n{summary}\n{'=' * 72}\n"
+                f"{next_step}"
+            )
+        except Exception as e:
+            logging.warning(f"Natural-language graph rendering failed: {e}")
+            return self.show_raw_graph_context(key)
+
+    @staticmethod
+    def _format_rag_suggestions(
+        context_key: str,
+        suggestions: List[Dict],
+        heading: str = "",
+        language: str = "en",
+    ) -> str:
+        if not suggestions:
+            return (
+                f"暂时没有为 {context_key} 生成可靠的推荐问题。"
+                if language == "zh" else
+                f"No sufficiently supported questions were generated for {context_key}."
+            )
+        default_heading = (
+            f"基于 {context_key} 可继续探索：" if language == "zh"
+            else f"Questions to explore for {context_key}:"
+        )
+        lines = [heading or default_heading]
+        for index, item in enumerate(suggestions, start=1):
+            question = item['question']
+            reason = str(item.get('reason') or '').strip()
+            lines.append(f"{index}. {question}" + (f"\n   — {reason}" if reason else ""))
+        return '\n'.join(lines)
+
+    def suggest_rag_questions(self, context_key: str, language: str = "en") -> str:
+        try:
+            self.active_rag_context = context_key.upper()
+            graph = self.knowledge_store.graph_context(context_key, limit=30)
+            structured_edges = {"HAS_SYNTHESIS", "HAS_CRYSTAL_DATA"}
+            stage = (
+                "workflow"
+                if any(edge.get("edge_type") in structured_edges for edge in graph.get("edges", []))
+                else "general"
+            )
+            suggestions = self.rag.suggest_questions(
+                context_key, language=language, stage=stage
+            )
+            if not suggestions:
+                return "No evidence-backed questions could be generated for this context."
+            return self._format_rag_suggestions(context_key, suggestions, language=language)
+        except Exception as e:
+            return f"❌ Question suggestion failed: {e}"
 
     def _create_openai_client(self) -> OpenAI:
         """Initialize OpenAI client with configuration"""
@@ -290,13 +566,13 @@ class ChemicalQuerySystem:
         
         return pd.DataFrame()
 
-    def trigger_workflow(self, pdf_path: str) -> str:
+    def trigger_workflow(self, pdf_path: str, language: str = "en") -> str:
         try:  ################################################################################
             base_output_dir = "./ulanggraph/output"  #########"/Users/linzuhong/学习文件/3-博/博四/C2ML/ulanggraph/output"
             input_dir = "./ulanggraph/input"         #########"/Users/linzuhong/学习文件/3-博/博四/C2ML/ulanggraph/input"  
             config_path = "./extrfinetune/config.json"#########"/Users/linzuhong/学习文件/3-博/博四/C2ML/extrfinetune/config.json"
             system_file = "./extrfinetune/finetunetable/system198.txt"#########"/Users/linzuhong/学习文件/3-博/博四/C2ML/extrfinetune/finetunetable/system198.txt"
-            ccdc_data = "./datareading/ccdcdata.json"#########"/Users/linzuhong/学习文件/3-博/博四/C2ML/datareading/ccdcdata.json"
+            ccdc_data = "./datareading/des_mate.json"
 
             os.makedirs(input_dir, exist_ok=True)
 
@@ -312,11 +588,13 @@ class ChemicalQuerySystem:
                 text_file = Path(input_dir) / f"{name}.txt"
                 if not os.path.exists(text_file):
                     return f"\n❌ Input file not found: {text_file}"
+            self.active_rag_context = name.upper()
 
             # 创建工作流管理器并运行
             workflow_manager = MOFWorkflowManager(
                 config_path=config_path,
-                output_dir=base_output_dir
+                output_dir=base_output_dir,
+                rag_client=self.client,
             )
 
             print("\n🔧 Debug information:")
@@ -355,8 +633,31 @@ class ChemicalQuerySystem:
                     print(f"\n📄 Analysis Results:\n{'='*80}")
                     print(content)
                     print(f"{'='*80}\n")
-                    print("\n2. To view structured results after analysis:")
-                    print("   show structure")
+                    if language == "zh":
+                        print("\n📚 下一步：")
+                        print("1. 查看结构化合成表：show structure")
+                        print(f"2. 查看知识图谱摘要：graph show {name}")
+                    else:
+                        print("\n📚 Next steps:")
+                        print("1. View the structured synthesis table: show structure")
+                        print(f"2. View the knowledge-graph summary: graph show {name}")
+                    try:
+                        suggestions = self.rag.suggest_questions(
+                            name, language=language, stage="workflow"
+                        )
+                        print()
+                        print(self._format_rag_suggestions(
+                            name,
+                            suggestions,
+                            language=language,
+                            heading=(
+                                "结构化分析后可进一步探索：" if language == "zh"
+                                else "Further questions enabled by the structured analysis:"
+                            ),
+                        ))
+                    except Exception as suggestion_error:
+                        logging.warning(f"Post-workflow question suggestion failed: {suggestion_error}")
+                        print(f"3. suggest questions {name}")
                     return ""
 
                 return f"⚠️ Analysis results file not found: {txt_file}"
@@ -367,7 +668,7 @@ class ChemicalQuerySystem:
             print(f"\n❌ Error in workflow processing: {str(e)}")
             return f"❌ Error in workflow processing: {str(e)}"
     
-    def show_structure(self) -> str:
+    def show_structure(self, language: str = "en") -> str:
         """显示最新的结构化结果"""
         try:
             # 修正: 使用正确的结构化输出目录路径
@@ -393,6 +694,17 @@ class ChemicalQuerySystem:
             print(f"\n📊 Structured Analysis Results:\n{'='*80}")
             print(content)
             print(f"{'='*80}")
+            identifiers = re.findall(r'^# Identifier:\s*(.+?)\s*$', content, flags=re.MULTILINE)
+            if identifiers:
+                key = identifiers[0].strip()
+                print("\n💡 可以继续：" if language == "zh" else "\n💡 Next:")
+                print(f"   suggest questions {key}")
+                print(f"   graph show {key}")
+                example = (
+                    f"{key} 的结构–性能关系有哪些文献证据？" if language == "zh"
+                    else f"What evidence links the structure of {key} to its reported properties?"
+                )
+                print(f"   rag ask {example}")
             return ""
             
         except Exception as e:
@@ -461,44 +773,109 @@ class ChemicalQuerySystem:
 
     def get_answer(self, question: str) -> str:
         try:
-            # 首先检查合成相关的查询
-            if "how to synthesize" in question.lower() or "synthesis of" in question.lower():
+            lower = question.lower().strip()
+            language = self.rag.language_for(question)
+
+            if lower.startswith('rag ingest '):
+                return self.ingest_rag_path(question[len('rag ingest '):].strip())
+            if lower.startswith('rag ask '):
+                rag_question = question[len('rag ask '):].strip()
+                context = self._find_graph_entity(rag_question) or self.active_rag_context
+                if context:
+                    self.active_rag_context = context
+                return self.rag.ask(rag_question, entity_key=context)
+            if lower.startswith('ask papers '):
+                rag_question = question[len('ask papers '):].strip()
+                context = self._find_graph_entity(rag_question) or self.active_rag_context
+                if context:
+                    self.active_rag_context = context
+                return self.rag.ask(rag_question, entity_key=context)
+            if lower in {'clear context', 'forget current paper', '清除上下文', '忘记当前文献'}:
+                self.active_rag_context = None
+                return "Context cleared." if language == "en" else "已清除当前文献上下文。"
+            if lower.startswith('suggest questions'):
+                context_key = question[len('suggest questions'):].strip()
+                if not context_key:
+                    return (
+                        "请提供 MOF 标识符或研究主题。" if language == "zh"
+                        else "Please provide a MOF identifier or research topic."
+                    )
+                return self.suggest_rag_questions(context_key, language=language)
+            if lower == 'graph stats':
+                return json.dumps(self.knowledge_store.stats(), ensure_ascii=False, indent=2)
+            if lower.startswith('graph raw '):
+                return self.show_raw_graph_context(question[len('graph raw '):].strip())
+            if lower.startswith('graph show '):
+                return self.show_graph_context(
+                    question[len('graph show '):].strip(), language=language
+                )
+            if lower.startswith('graph similar '):
+                return self.show_similar_mofs(
+                    question[len('graph similar '):].strip(), language=language
+                )
+            if lower.startswith('graph recommend '):
+                return self.show_case_recommendation(
+                    question[len('graph recommend '):].strip(), language=language
+                )
+            if lower.startswith('graph update '):
+                return self.update_graph_from_artifact(question[len('graph update '):].strip())
+
+            # 显式工作流命令必须先于知识图谱的自然语言路由。
+            # 这样首次下载论文时，即使知识库目录尚未建立也不会被拦截。
+            if "how to synthesize" in lower or "synthesis of" in lower:
                 # 清理问题文本，提取查询关键词
                 search_terms = ['how', 'to', 'synthesize', 'synthesis', 'of', 'the', 'compound', 'material', 'mof']
                 query = ' '.join(
-                    word for word in question.lower().split() 
+                    word for word in lower.split()
                     if word.strip('?.,!') not in search_terms
                 ).strip()
-                return self.get_synthesis_info(query)
+                return self.get_synthesis_info(query, language=language)
                 
             # 检查下载CIF文件的命令
-            if question.lower().startswith('download cif'):
+            if lower.startswith('download cif'):
                 ccdc_code = question.split()[-1].upper()
                 return self.download_cif(ccdc_code)
                 
             # 检查可视化结构的命令
-            if question.lower().startswith('visualize'):
+            if lower.startswith('visualize'):
                 ccdc_code = question.split()[-1].upper()
                 return self.visualize_structure(ccdc_code)
                 
             # 检查其他特定命令
-            if question.lower().startswith('process pdf'):
+            if lower.startswith('process pdf'):
                 return None  # 让 main.py 处理输出
-            elif question.lower().startswith('workflow'):
-                return self.trigger_workflow(question.split(None, 1)[1])
-            elif question.lower() == 'show structure':
-                return self.show_structure()
+            elif lower.startswith('workflow'):
+                parts = question.split(None, 1)
+                if len(parts) < 2 or not parts[1].strip():
+                    return (
+                        "请提供 CCDC 编号或已处理 PDF 的路径，例如：workflow ABAYUY"
+                        if language == "zh" else
+                        "Provide a CCDC code or processed PDF path, for example: workflow ABAYUY"
+                    )
+                return self.trigger_workflow(parts[1].strip(), language=language)
+            elif lower == 'show structure':
+                return self.show_structure(language=language)
+
+            if self._is_system_query(question):
+                return self._handle_system_query(question)
+
+            ingredient_request = self.ingredient_qa.classify(question)
+            if ingredient_request["intent"] == "reagent_to_mof":
+                return self.ingredient_qa.answer(
+                    question, language=language, extracted=ingredient_request
+                )
+
+            natural_context = self._natural_rag_context(question)
+            if natural_context:
+                if self._is_material_overview_question(question, natural_context):
+                    graph = self.knowledge_store.graph_context(natural_context, limit=1)
+                    if graph.get("nodes"):
+                        return self.rag.describe_graph(natural_context, language=language)
+                return self.rag.ask(question, entity_key=natural_context)
                 
             # 只有普通问题才进行 PDF 查询或其他处理
-            if any(term in question.lower() for term in ['pdf', 'document', 'file', 'paper']):
+            if any(term in question.lower() for term in ['pdf', 'document', 'file', 'paper', '论文', '文献']):
                 return self._handle_pdf_query(question)
-
-            # 系统查询
-            if any(phrase in question.lower() for phrase in [
-                'what can you do', 'capabilities', 'help', 'how to use',
-                'example', 'syntax', 'properties', 'available data'
-            ]):
-                return self._handle_system_query(question)
 
             # Use enhanced query handler for normal queries
             return self.query_handler.process_query(question)
@@ -506,30 +883,6 @@ class ChemicalQuerySystem:
         except Exception as e:
             logging.error(f"Error in get_answer: {e}")
             return f"查询处理出错: {str(e)}"
-
-        except Exception as e:
-            logging.error(f"Error in get_answer: {str(e)}")
-            return f"查询处理出错: {str(e)}"
-            
-    def _handle_pdf_query(self, question: str) -> str:
-        """Handle PDF-related queries"""
-        if not self.pdf_content:
-            return "No PDF documents have been processed yet."
-            
-        # Create context from PDF content
-        context = "Available documents:\n"
-        for path, info in self.pdf_content.items():
-            context += f"- {info['filename']} ({info['metadata'].page_count} pages)\n"
-        
-        # Get response from OpenAI
-        prompt = f"""
-        Context: {context}
-        PDF contents: {[info['text'] for info in self.pdf_content.values()]}
-        Question: {question}
-        """
-        
-        response = self._query_openai(prompt)
-        return response
 
     def _handle_system_query(self, question: str) -> str:
         """Handle system-related questions"""

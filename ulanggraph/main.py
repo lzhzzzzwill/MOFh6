@@ -1,6 +1,8 @@
 import sys
 import os
+import json
 from pathlib import Path
+from openai import OpenAI
 
 # 添加项目根目录到 Python 路径
 project_root = Path(__file__).parent.parent
@@ -13,17 +15,28 @@ def main():
     """主函数"""
     try:
         # 配置路径
-        config_path = "/Users/linzuhong/学习文件/3-博/博四/C2ML/extrfinetune/config.json"
-        base_output_dir = "/Users/linzuhong/学习文件/3-博/博四/C2ML/ulanggraph/output"
-        input_dir = "/Users/linzuhong/学习文件/3-博/博四/C2ML/ulanggraph/input"
-        system_file = "/Users/linzuhong/学习文件/3-博/博四/C2ML/extrfinetune/finetunetable/system198.txt"
-        ccdc_data = "/Users/linzuhong/学习文件/3-博/博四/C2ML/datareading/ccdcdata.json"
+        config_path = project_root / "extrfinetune" / "config.json"
+        base_output_dir = project_root / "ulanggraph" / "output"
+        input_dir = project_root / "ulanggraph" / "input"
+        system_file = project_root / "extrfinetune" / "finetunetable" / "system198.txt"
+        ccdc_data = project_root / "datareading" / "des_mate.json"
+
+        # Reuse the existing API-key configuration. The standalone batch entry
+        # does not generate question suggestions, but it does need a client to
+        # create embeddings for the persistent literature index.
+        with config_path.open('r', encoding='utf-8') as config_file:
+            config = json.load(config_file)
+        rag_client = OpenAI(api_key=config['openaiapikey'])
 
         # 创建工作流管理器实例
-        workflow_manager = MOFWorkflowManager(config_path, base_output_dir)
+        workflow_manager = MOFWorkflowManager(
+            str(config_path), str(base_output_dir), rag_client=rag_client
+        )
         
         # 运行工作流
-        final_state = workflow_manager.run(input_dir, system_file, ccdc_data)
+        final_state = workflow_manager.run(
+            str(input_dir), str(system_file), str(ccdc_data)
+        )
         
         # 检查最终输出
         if final_state and 'file_paths' in final_state and 'final_output' in final_state['file_paths']:

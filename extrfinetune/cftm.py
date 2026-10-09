@@ -4,6 +4,7 @@ import pandas as pd
 from datetime import datetime
 from tqdm import tqdm
 from openai import OpenAI
+from extrfinetune.file_utils import list_visible_text_files
 
 
 class FineTunedModelProcessor:
@@ -50,7 +51,7 @@ class FineTunedModelProcessor:
         获取测试文件列表
         :return: 文件名列表
         """
-        test_files = [f for f in os.listdir(self.test_folder) if f.endswith(".txt")]
+        test_files = list_visible_text_files(self.test_folder)
         if not test_files:
             raise FileNotFoundError(f"No .txt files found in {self.test_folder}")
         return test_files

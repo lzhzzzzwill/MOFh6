@@ -14,6 +14,8 @@ from extrfinetune.ctotable import ElsevierTableExtractor
 from extrfinetune.cjtj import CrystalDataComparator
 from extrfinetune.chl import AcronymExtractor
 from extrfinetune.cstrucout import MOFDataProcessor 
+from knowledge import KnowledgeStore, StructuredKnowledgeIngestor
+from rag import MOFRAGService
 
 class StateSchema(TypedDict):
     """工作流状态模式"""
@@ -24,7 +26,7 @@ class StateSchema(TypedDict):
 
 class MOFWorkflowManager(WorkflowBase):
     """MOF工作流管理器"""
-    def __init__(self, config_path: str, output_dir: str):
+    def __init__(self, config_path: str, output_dir: str, rag_client: Any = None):
         super().__init__(config_path, output_dir)
         self.file_processor = FileProcessor(config_path, output_dir)
         self.data_processor = DataProcessor(config_path, output_dir)
@@ -32,6 +34,10 @@ class MOFWorkflowManager(WorkflowBase):
         structure_dir = self.data_processor.output_dirs['final'] / 'structure'
         structure_dir.mkdir(exist_ok=True)
         self.data_processor.output_dirs['structure'] = structure_dir
+        knowledge_dir = self.output_dir / 'knowledge'
+        self.knowledge_store = KnowledgeStore(str(knowledge_dir / 'mofh6.db'))
+        self.knowledge_ingestor = StructuredKnowledgeIngestor(self.knowledge_store, pubchem_enabled=True)
+        self.rag_service = MOFRAGService(self.knowledge_store, rag_client)
 
 
     def process_text_with_bm25(self, text: str, abbreviations: Dict) -> str:
@@ -406,13 +412,85 @@ class MOFWorkflowManager(WorkflowBase):
                 print(f"❌ Error during structure processing: {e}")
                 raise
             
-            state['current_step'] = END
+            state['current_step'] = "update_knowledge_base"
             return state
 
         except Exception as e:
             print(f"❌ Error in structure processing: {e}")
-            state['current_step'] = END
+            state['current_step'] = "update_knowledge_base"
             return state
+
+    def update_knowledge_base(self, state: StateSchema) -> StateSchema:
+        """Incrementally index source texts and structured synthesis/crystal artifacts."""
+        print("\n🧠 Updating persistent RAG index and knowledge graph...")
+        summary: Dict[str, Any] = {}
+        try:
+            input_dir = state['file_paths'].get('input_dir')
+            if input_dir:
+                summary['rag'] = self.rag_service.ingest_path(str(input_dir))
+
+            identifiers = set()
+            structure_output = state['file_paths'].get('structure_output')
+            if structure_output and Path(structure_output).exists():
+                structure_text = Path(structure_output).read_text(encoding='utf-8')
+                identifiers.update(
+                    value.strip().upper()
+                    for value in re.findall(r'^# Identifier:\s*(.+)$', structure_text, flags=re.M)
+                )
+
+            tables_output = state['file_paths'].get('tables_output')
+            if tables_output and Path(tables_output).exists():
+                tables_data = json.loads(Path(tables_output).read_text(encoding='utf-8'))
+                if isinstance(tables_data, dict):
+                    identifiers.update(str(key).strip().upper() for key in tables_data)
+
+            ccdc_data = state['file_paths'].get('ccdc_data')
+            if ccdc_data and Path(ccdc_data).exists() and identifiers:
+                summary['ccdc_graph'] = self.knowledge_ingestor.ingest_ccdc_metadata(
+                    str(ccdc_data), sorted(identifiers)
+                )
+
+            if tables_output and Path(tables_output).exists():
+                comparison_output = state['file_paths'].get('comparison_output')
+                summary['crystal_graph'] = self.knowledge_ingestor.ingest_crystal_json(
+                    str(tables_output),
+                    selection_path=str(comparison_output) if comparison_output else None,
+                    ccdc_path=str(ccdc_data) if ccdc_data else None,
+                )
+
+            if structure_output and Path(structure_output).exists():
+                compound_labels = {}
+                for identifier in identifiers:
+                    identity = self.rag_service._target_identity(identifier)
+                    labels = identity.get('article_compound_labels') or []
+                    if labels:
+                        compound_labels[identifier] = labels
+                summary['synthesis_graph'] = self.knowledge_ingestor.ingest_synthesis_markdown(
+                    str(structure_output), compound_labels=compound_labels
+                )
+
+            literature_results = []
+            for identifier in sorted(identifiers):
+                try:
+                    literature_results.append(
+                        self.rag_service.extract_literature_summary(identifier)
+                    )
+                except Exception as exc:
+                    literature_results.append({
+                        'status': 'error', 'target': identifier, 'reason': str(exc)
+                    })
+            if literature_results:
+                summary['literature_graph'] = literature_results
+
+            summary['stats'] = self.knowledge_store.stats()
+            state['data']['knowledge_update'] = summary
+            state['file_paths']['knowledge_db'] = self.knowledge_store.db_path
+            print(f"✅ Knowledge base updated: {summary['stats']}")
+        except Exception as e:
+            state['data']['knowledge_update_error'] = str(e)
+            print(f"⚠️ Knowledge base update failed without discarding workflow outputs: {e}")
+        state['current_step'] = END
+        return state
 
     def create_workflow(self) -> StateGraph:
         """创建工作流图"""
@@ -426,6 +504,7 @@ class MOFWorkflowManager(WorkflowBase):
         workflow.add_node("generate_final_output", self.generate_final_output)
         workflow.add_node("post_process_final_output", self.post_process_final_output)
         workflow.add_node("process_to_structure", self.process_to_structure)  # Add new node
+        workflow.add_node("update_knowledge_base", self.update_knowledge_base)
         
         # Set workflow sequence
         workflow.set_entry_point("process_synthesis")
@@ -435,7 +514,8 @@ class MOFWorkflowManager(WorkflowBase):
         workflow.add_edge("process_abbreviations", "generate_final_output")
         workflow.add_edge("generate_final_output", "post_process_final_output")
         workflow.add_edge("post_process_final_output", "process_to_structure")  # Add new edge
-        workflow.add_edge("process_to_structure", END)
+        workflow.add_edge("process_to_structure", "update_knowledge_base")
+        workflow.add_edge("update_knowledge_base", END)
         
         return workflow.compile()
 

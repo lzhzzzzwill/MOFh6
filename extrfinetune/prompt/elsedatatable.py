@@ -26,6 +26,9 @@ prompt_template = """
 
 - **Important Notes**:
   - **Synonyms**: Be aware that the keywords may have synonyms; do not overlook their presence.
+  - **Column alignment is mandatory**: First identify the compound columns from the table header, then map every row value to those same columns. PDF text may omit blank cells. Never shift the remaining values left to fill those blanks.
+  - **Use crystallographic symmetry to resolve sparse angle rows**: cubic, tetragonal, and orthorhombic systems have alpha = beta = gamma = 90°; monoclinic systems have alpha = gamma = 90° and only beta may differ; hexagonal systems have alpha = beta = 90° and gamma = 120°. If an angle row contains fewer values than compound columns, assign non-90° values only to crystal systems for which that angle is variable.
+  - **Cross-check each extracted object**: Its formula, crystal system, space group, cell lengths, angles, and colour must all come from the same compound column. Do not combine adjacent columns.
 
 - **Constraints**:
   - The extracted data must be accurate and presented in an easily understandable dictionary format, ensuring completeness and correctness.
@@ -439,4 +442,3 @@ prompt_template = """
 **And provide the output in the Output Format.**
 
 """
-

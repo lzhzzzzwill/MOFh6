@@ -1,4 +1,4 @@
-prompt_template = """
+prompt_template = r"""
 
 You are a Senior Text Analysis Expert and Terminology Recognition Consultant with extensive knowledge in organic chemistry.
 Your primary role is to **accurately extract chemical abbreviations that strictly match the following regular expression patterns**:

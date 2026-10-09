@@ -6,6 +6,7 @@ from typing import List, Dict, Optional
 from openai import OpenAI
 from tqdm import tqdm
 from extrfinetune.prompt.elsehl import prompt_template
+from extrfinetune.file_utils import list_visible_text_files
 
 class AcronymExtractor:
     def __init__(self, config_path: str, input_folder: str, output_folder: str):
@@ -18,9 +19,9 @@ class AcronymExtractor:
         with open(config_path, 'r', encoding='utf-8') as f:
             config = json.load(f)
 
-        self.api_key = config.get('apikey')
-        self.base_url = config.get('baseurl')
-        self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
+        self.api_key = config.get('openaiapikey')
+        #self.base_url = config.get('baseurl')
+        self.client = OpenAI(api_key=self.api_key)#, base_url=self.base_url)
 
         self.input_folder = input_folder
         self.output_folder = output_folder
@@ -94,7 +95,7 @@ class AcronymExtractor:
         处理目录中的所有文件
         """
         all_results = {}
-        files = [f for f in os.listdir(self.input_folder) if f.endswith(".txt")]
+        files = list_visible_text_files(self.input_folder)
 
         with tqdm(total=len(files), desc="Processing files", unit="file") as pbar:
             for filename in files:
