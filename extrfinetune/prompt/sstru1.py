@@ -40,7 +40,7 @@ As a MOF synthesis expert, you are responsible for analyzing the input informati
   Chemical_Name: catena-((μ2-Glutarato)-bis(μ2-2-aminopyrimidine)-di-silver(i) monohydrate)
   Number: 714484
   Synonyms: N/A
-  [La(H2O)2L1(NO3)3]∞ (2)
+  [Ag2(L1)2(L3)]·H2O (2)
   |  Metal Source |    Organic Linkers Source     | Modulator Source |  Solvent Source  | Quantity of Metal |  Quantity of Organic Linkers  | Quantity of Modulator |  Quantity of Solvent   |  pH  |  Synthesis Temperature | Synthesis Time |  Crystal Morphology  |  Yield  |  Equipment |
   |---------------|-------------------------------|------------------|------------------|-------------------|-------------------------------|-----------------------|------------------------|------|------------------------|----------------|----------------------|---------|------------|
   |     AgNO3     |  2-aminopyrimidine; glutarate |   aqueous NH3    |     CH3OH–H2O    |   170 mg, 1 mmol  | 94 mg, 1 mmol; 132 mg, 1 mmol |          25%          |    10 mL, v/v: 1/1     |  N/A |     room temperature   |  several days  |  colorless crystals  |   62%   |     N/A    |
@@ -60,15 +60,14 @@ As a MOF synthesis expert, you are responsible for analyzing the input informati
   Cu2(4,4′-bpy)2SO4·6(H2O), (1)
   |  Metal Source  |  Organic Linkers Source  | Modulator Source |  Solvent Source  |   Quantity of Metal  |        Quantity of Organic Linkers         | Quantity of Modulator |  Quantity of Solvent  |  pH  |  Synthesis Temperature  | Synthesis Time |    Crystal Morphology    |                  Yield                |         Equipment        |
   |----------------|--------------------------|------------------|------------------|----------------------|--------------------------------------------|-----------------------|-----------------------|------|-------------------------|----------------|--------------------------|---------------------------------------|--------------------------|
-  | copper sulfate |     4,4′-bpy; l-asp      |        N/A       |       water      | 0.1153 g (0.46 mmol) | 0.1030 g (0.66 mmol); 0.0787 g (0.59 mmol) |          N/A          |          16 mL        |  N/A |           120 °C        |     3 days     | Greenish yellow crystals |  0.08 g, yield ca. 54% based on CuSO4 |  Teflon-lined autoclave  |
+  | copper sulfate |       4,4′-bpy           |       l-asp      |       water      | 0.1153 g (0.46 mmol) |           0.1030 g (0.66 mmol)             | 0.0787 g (0.59 mmol)  |          16 mL        |  N/A |           120 °C        |     3 days     | Greenish yellow crystals |  0.08 g, yield ca. 54% based on CuSO4 |  Teflon-lined autoclave  |
 
   -**Input**: 
   TUSVUZ
   Chemical_Name: catena-[bis(μ3-Glutarato)-(μ2-aqua)-tetrapyridyl-di-cobalt(ii) pyridine solvate]
   Number: 714524
   Synonyms: N/A
-  Synthesis of complex [Ag2(L1)2(L3)]·H2O (2) A mixture of AgNO3 (170mg, 1mmol), 2-aminopyrimidine (94mg, 1mmol) and glutarate (132mg, 1mmol) were stirred in CH3OH–H2O mixed solvent (10mL, v/v: 1/1). Then aqueous NH3 solution (25%) was dropped into the mixture to give a clear solution. The resultant solution was allowed slowly to evaporate in darkness at room temperature for several days to give colorless crystals of 2 were obtained in 62% yield. They were washed with a small volume of cold CH3OH and diethyl ether.
-  Abbreviation: N/A
+  Synthesis of {[Co2(μ-OH2)(μ-glutarato)2(pyridine)4]·pyridine}n (2) To 10 cm3 of pyridine solution containing  0.066 g (0.5 mmol) glutaric acid was added 10 cm3 of a dimethylformamide (DMF) solution of cobalt(II) acetate tetrahydrate, 0.124 g (0.5 mmol). The mixture was stirred and then allowed to stand for several days at room temperature, , after which pink crystals were obtained (yield: 78.7%).Abbreviation: N/A
   Full Name: N/A
   -**Output**:
   **TUSVUZ**
